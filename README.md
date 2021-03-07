@@ -1,1 +1,1 @@
-# katas-template
+# Reversi Kata
