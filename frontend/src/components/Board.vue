@@ -1,7 +1,12 @@
 <template>
   <div class="reversi-board">
-    <div v-for="(row, ri) in board" :key="ri" class="row">
-      <Cell v-for="(cell, rc) in row" :key="rc" :color="cell" :disk="!!cell" />
+    <div v-for="(row, rowIndex) in board" :key="rowIndex" class="row">
+      <Cell
+        v-for="(cell, colIndex) in row" :key="colIndex"
+        :color="cell"
+        :disk="!!cell"
+        @click="playOn(rowIndex, colIndex)"
+      />
     </div>
   </div>
 </template>
@@ -10,17 +15,18 @@
 import { defineComponent } from 'vue';
 import Cell from './Cell.vue';
 
-import ReversiGame from '../app/reversi';
+import { Board } from '../app/reversi';
 
 export default defineComponent({
   components: { Cell },
-  data() {
-    return {
-      game: new ReversiGame(),
-    };
-  },
+  props: ['game'],
   computed: {
-    board() { return this.game.board; },
+    board(): Board { return this.game.board; },
+  },
+  methods: {
+    playOn(row: number, col: number) {
+      this.game.playsOn(row, col);
+    },
   },
 });
 </script>

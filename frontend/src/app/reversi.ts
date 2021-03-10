@@ -3,6 +3,8 @@ export enum DiskColor {
   WHITE = 'white',
 }
 
+export type Board = DiskColor[][];
+
 namespace Disk {
   export function inverse(disk: DiskColor): DiskColor {
     return disk === DiskColor.BLACK ? DiskColor.WHITE : DiskColor.BLACK;
@@ -10,10 +12,7 @@ namespace Disk {
 }
 
 enum Direction { UPWARD, DOWNWARD, LEFT, RIGTH, DOWNRIGTH, DOWNLEFT, UPRIGHT, UPLEFT }
-
-function enumKeys<O extends object, K extends keyof O>(obj: O): K[] {
-  return Object.getOwnPropertyNames(obj).filter(k => isNaN(Number(k))) as K[];
-}
+const DIRECTIONS = ['UPWARD', 'DOWNWARD', 'LEFT', 'RIGTH', 'DOWNRIGTH', 'DOWNLEFT', 'UPRIGHT', 'UPLEFT'];
 
 namespace DirectionMethods {
   export function toVector(direction: Direction): [number, number] {
@@ -32,7 +31,7 @@ namespace DirectionMethods {
 export default class ReversiGame {
   private currentDisk = DiskColor.BLACK;
 
-  public board: DiskColor[][];
+  public board: Board;
 
   constructor() {
     this.board = Array(8).fill(null).map(() => Array(8).fill(null));
@@ -47,20 +46,15 @@ export default class ReversiGame {
   }
 
   playsOn(row: number, col: number) {
+    if (this.board[row][col]) return false;
     let painted = false;
 
-    for (const direction of enumKeys(Direction)) {
+    for (const direction of DIRECTIONS) {
       const [dRow, dCol] = DirectionMethods.toVector(Direction[direction]);
-      painted = painted || this.tryPaintInDirection(Direction[direction], 0, row + dRow, col + dCol, this.currentDisk);
+      painted = this.tryPaintInDirection(Direction[direction], 0, row + dRow, col + dCol, this.currentDisk) || painted;
     }
-    // painted ||= this.tryPaintInDirection(Direction.UPWARD, 0, row -1 1, col, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.DOWNWARD, 0, row + 1, col, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.LEFT, 0, row, col - 1, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.RIGTH, 0, row, col + 1, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.DOWNRIGTH, 0, row + 1, col + 1, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.DOWNLEFT, 0, row + 1, col - 1, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.UPLEFT, 0, row - 1, col - 1, this.currentDisk);
-    // painted ||= this.tryPaintInDirection(Direction.UPRIGHT, 0, row - 1, col + 1, this.currentDisk);
+
+    if (!painted) return;
 
     this.board[row][col] = this.currentDisk;
     this.currentDisk = Disk.inverse(this.currentDisk);

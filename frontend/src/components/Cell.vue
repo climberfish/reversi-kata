@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { DiskColor } from '../app/reversi'
+import { DiskColor } from '../app/reversi';
 
 export default defineComponent({
   name: 'Cell',
@@ -16,11 +16,11 @@ export default defineComponent({
   },
   computed: {
     classFromColor() {
-      if (this.color == DiskColor.WHITE) return '-white';
-      if (this.color == DiskColor.BLACK) return '-black';
+      if (this.color === DiskColor.WHITE) return '-white';
+      if (this.color === DiskColor.BLACK) return '-black';
       return '';
-    }
-  }
+    },
+  },
 });
 </script>
 
